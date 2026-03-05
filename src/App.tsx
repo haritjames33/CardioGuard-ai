@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Activity, Heart, FileText, History, Info, ChevronRight, RefreshCcw } from 'lucide-react';
 import { HeartData, PredictionResult } from './types';
 import { getPrediction } from './ml/model';
+import { time } from 'console';
 
 export default function App() {
   const [step, setStep] = useState<'home' | 'form' | 'result'>('home');
@@ -218,7 +219,7 @@ export default function App() {
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 py-12 border-t border-slate-100 text-center">
-        <p className="text-slate-400 text-sm">© 2026 CardioGuard AI Clinical Decision Support System. Built with TensorFlow.js</p>
+        <p className="text-slate-400 text-sm">© {new Date().getFullYear()} CardioGuard AI Clinical Decision Support System. Built with TensorFlow.js</p>
       </footer>
     </div>
   );
