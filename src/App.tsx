@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, Heart, FileText, History, Info, ChevronRight, Download, RefreshCcw } from 'lucide-react';
+import { Activity, Heart, FileText, History, Info, ChevronRight, RefreshCcw } from 'lucide-react';
 import { HeartData, PredictionResult } from './types';
 import { getPrediction } from './ml/model';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 export default function App() {
   const [step, setStep] = useState<'home' | 'form' | 'result'>('home');
@@ -33,20 +31,7 @@ export default function App() {
     }
   };
 
-  const downloadPDF = async () => {
-    const element = document.getElementById('report-content');
-    if (!element) return;
-    
-    const canvas = await html2canvas(element);
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`CardioGuard_Report_${new Date().getTime()}.pdf`);
-  };
+
 
   return (
     <div className="min-h-screen font-sans">
@@ -132,12 +117,23 @@ export default function App() {
                 {Object.keys(formData).map((key) => (
                   <div key={key} className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500">{key.replace(/([A-Z])/g, ' $1')}</label>
-                    <input 
-                      type="number"
-                      value={formData[key as keyof HeartData]}
-                      onChange={(e) => setFormData({...formData, [key]: parseFloat(e.target.value)})}
-                      className="input-field"
-                    />
+                    {key === 'sex' ? (
+                      <select 
+                        value={formData[key as keyof HeartData]}
+                        onChange={(e) => setFormData({...formData, [key]: parseFloat(e.target.value)})}
+                        className="input-field"
+                      >
+                        <option value={0}>Female</option>
+                        <option value={1}>Male</option>
+                      </select>
+                    ) : (
+                      <input 
+                        type="number"
+                        value={formData[key as keyof HeartData]}
+                        onChange={(e) => setFormData({...formData, [key]: parseFloat(e.target.value)})}
+                        className="input-field"
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -212,10 +208,7 @@ export default function App() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={downloadPDF} className="btn-primary flex-1">
-                  <Download size={20} /> Download Clinical PDF
-                </button>
-                <button onClick={() => setStep('form')} className="btn-secondary flex-1">
+                <button onClick={() => setStep('form')} className="btn-primary flex-1">
                   <RefreshCcw size={20} /> New Diagnosis
                 </button>
               </div>
