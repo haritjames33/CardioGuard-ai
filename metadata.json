@@ -1,0 +1,5 @@
+{
+  "name": "CardioGuard AI",
+  "description": "Clinical Decision Support System for Heart Disease Prediction using Deep Learning (9-layer DNN).",
+  "requestFramePermissions": []
+}
